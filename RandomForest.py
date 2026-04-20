@@ -14,10 +14,10 @@ df = pd.read_csv("ML_Final_Final.csv")
 print("COLUMNS IN DATASET:")
 print(df.columns.astype(str))
 
-# Ensure target column exists
+# Ensure target column exists, create using threshold
 if "DefectLabel" not in df.columns:
-    print("DefectLabel not found, creating from DefectCount")
-    df["DefectLabel"] = (df["DefectCount"] > 0).astype(int)
+    print("DefectLabel not found, creating from DefectCount with threshold 500")
+    df["DefectLabel"] = (df["DefectCount"] > 300).astype(int)
 
 # Encode categorical variables
 categorical_cols = df.select_dtypes(include=["object", "string"]).columns
@@ -87,7 +87,7 @@ print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
 
 print("\nConfusion Matrix:")
-print(confusion_matrix(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred, labels=[0,1]))
 
 print("\nAccuracy Score:", accuracy_score(y_test, y_pred))
 if len(y.unique()) > 1:
