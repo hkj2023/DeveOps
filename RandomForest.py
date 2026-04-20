@@ -4,6 +4,8 @@
 
 import pandas as pd
 import numpy as np
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 import joblib
 import json
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -70,7 +72,7 @@ print("Best Parameters:", grid.best_params_)
 # 8. Evaluation
 # -----------------------------
 y_pred = best_rf.predict(X_test)
-print("\n📊 Classification Report:")
+print("Classification Report:")
 print(classification_report(y_test, y_pred))
 print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
 
@@ -81,7 +83,7 @@ print("ROC-AUC Score:", roc_auc_score(y_test, y_prob))
 # 9. Save Trained Model
 # -----------------------------
 joblib.dump(best_rf, "defect_prediction_rf.pkl")
-print("✅ Model saved as defect_prediction_rf.pkl")
+print("Model saved as defect_prediction_rf.pkl")
 
 # -----------------------------
 # 10. Generate Predictions JSON for Jenkins
@@ -109,4 +111,4 @@ else:
 with open("defect_predictions.json", "w") as f:
     json.dump(predictions, f, indent=4)
 
-print("✅ Defect predictions exported to defect_predictions.json")
+print("Defect predictions exported to defect_predictions.json")
