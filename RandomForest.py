@@ -11,7 +11,7 @@ from imblearn.over_sampling import SMOTE
 # Load dataset
 df = pd.read_csv("ML_Final_Final.csv")
 
-# Encode categorical variables
+# Encode categorical variables (compatible with Pandas 2/3)
 categorical_cols = df.select_dtypes(include=["object", "string"]).columns
 label_encoders = {}
 for col in categorical_cols:
@@ -67,11 +67,12 @@ with open("defect_predictions.json", "w") as f:
     json.dump(predictions, f, indent=4)
 
 # Reports (plain text, no emoji)
-print("\nClassification Report:")
+print("Classification Report:")
 print(classification_report(y_test, y_pred))
 
-print("\nConfusion Matrix:")
+print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
 
-print("\nAccuracy Score:", accuracy_score(y_test, y_pred))
-print("\nROC AUC Score:", roc_auc_score(y_test, y_prob))
+print("Accuracy Score:", accuracy_score(y_test, y_pred))
+print("ROC AUC Score:", roc_auc_score(y_test, y_prob))
+
