@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from imblearn.over_sampling import SMOTE
 
 # -----------------------------
-# 1. Fix encoding for CI/CD
+# 1. Fix encoding (CI/CD safe)
 # -----------------------------
 try:
     sys.stdout.reconfigure(encoding='utf-8')
@@ -24,7 +24,7 @@ except:
 df = pd.read_csv("ML_Final_Final.csv")
 
 # -----------------------------
-# 3. Clean column names (VERY IMPORTANT)
+# 3. Clean column names
 # -----------------------------
 df.columns = df.columns.str.strip()
 
@@ -32,22 +32,16 @@ print("COLUMNS IN DATASET:")
 print(df.columns)
 
 # -----------------------------
-# 4. Auto-detect target column
+# 4. CREATE TARGET COLUMN (IMPORTANT FIX)
 # -----------------------------
-possible_targets = ["DefectLabel", "Defect Label", "defectlabel", "Defect_Label"]
+if "DefectLabel" not in df.columns:
+    if "DefectCount" in df.columns:
+        print("\nDefectLabel not found → creating from DefectCount")
+        df["DefectLabel"] = (df["DefectCount"] > 0).astype(int)
+    else:
+        raise ValueError("No valid target column found (DefectLabel or DefectCount)")
 
-target_col = None
-for col in possible_targets:
-    if col in df.columns:
-        target_col = col
-        break
-
-if target_col is None:
-    raise ValueError(
-        f"Target column not found. Available columns: {list(df.columns)}"
-    )
-
-print("Using target column:", target_col)
+target_col = "DefectLabel"
 
 # -----------------------------
 # 5. Handle missing values
@@ -72,12 +66,12 @@ X = df.drop(target_col, axis=1)
 y = df[target_col]
 
 # -----------------------------
-# 8. Handle class imbalance (SMOTE)
+# 8. Handle imbalance
 # -----------------------------
 smote = SMOTE(random_state=42)
 X_resampled, y_resampled = smote.fit_resample(X, y)
 
-print("Class distribution after resampling:")
+print("\nClass distribution after SMOTE:")
 print(y_resampled.value_counts())
 
 # -----------------------------
@@ -90,7 +84,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # -----------------------------
-# 10. Model + hyperparameter tuning
+# 10. Model training
 # -----------------------------
 rf = RandomForestClassifier(random_state=42)
 
@@ -113,7 +107,7 @@ grid_search.fit(X_train, y_train)
 
 best_rf = grid_search.best_estimator_
 
-print("Best Parameters:", grid_search.best_params_)
+print("\nBest Parameters:", grid_search.best_params_)
 
 # -----------------------------
 # 11. Predictions
@@ -140,7 +134,7 @@ with open("defect_predictions.json", "w", encoding="utf-8") as f:
     json.dump(results, f, indent=4)
 
 # -----------------------------
-# 14. Evaluation (CI-safe output)
+# 14. Evaluation
 # -----------------------------
 print("\n=== Classification Report ===")
 print(classification_report(y_test, y_pred))
@@ -148,5 +142,5 @@ print(classification_report(y_test, y_pred))
 print("\n=== Confusion Matrix ===")
 print(confusion_matrix(y_test, y_pred))
 
-print("\nAccuracy Score:", accuracy_score(y_test, y_pred))
-print("ROC AUC Score:", roc_auc_score(y_test, y_prob))
+print("\nAccuracy:", accuracy_score(y_test, y_pred))
+print("ROC AUC:", roc_auc_score(y_test, y_prob))
