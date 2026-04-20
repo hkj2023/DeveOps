@@ -71,7 +71,7 @@ def best_action(state, policy, default="rerun_failed_tests"):
     return policy.get(state, default)
 
 # ==========================================
-# 🔥 FIX 2: Convert tuple keys → string keys for JSON
+# 🔥 FIX 2: Convert tuple keys → reys for JSON
 # ==========================================
 policy_json = {f"{s[0]}_{s[1]}_{s[2]}": a for s, a in policy.items()}
 
@@ -91,7 +91,7 @@ print("Q-Learning complete. Optimal pipeline actions learned.")
 print("Sample policy (state,  best action):")
 
 for k, v in list(policy.items())[:10]:
-    print(k, "→", v)
+    print(k, " ", v)
 
 # Example usage
 test_states = [(4, 3, 3), (3, 2, 1), (2, 0, 0)]
