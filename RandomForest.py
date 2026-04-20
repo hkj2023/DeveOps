@@ -4,7 +4,7 @@ import joblib
 import json
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_auc_score
 from sklearn.preprocessing import LabelEncoder
 from imblearn.over_sampling import SMOTE
 
@@ -19,13 +19,11 @@ if "DefectLabel" not in df.columns:
     print("DefectLabel not found, creating from DefectCount")
     df["DefectLabel"] = (df["DefectCount"] > 0).astype(int)
 
-# Encode categorical variables (compatible with Pandas 2/3)
+# Encode categorical variables
 categorical_cols = df.select_dtypes(include=["object", "string"]).columns
-label_encoders = {}
 for col in categorical_cols:
     le = LabelEncoder()
     df[col] = le.fit_transform(df[col].astype(str))
-    label_encoders[col] = le
 
 # Separate features and target
 X = df.drop("DefectLabel", axis=1)
@@ -34,7 +32,7 @@ y = df["DefectLabel"]
 print("Class distribution:")
 print(y.value_counts())
 
-# Handle class imbalance with SMOTE only if >1 class
+# Handle imbalance only if >1 class
 if len(y.unique()) > 1:
     smote = SMOTE(random_state=42)
     X_resampled, y_resampled = smote.fit_resample(X, y)
@@ -66,7 +64,6 @@ print("Best Parameters:", grid_search.best_params_)
 
 # Predictions
 y_pred = best_rf.predict(X_test)
-y_prob = best_rf.predict_proba(X_test)[:, 1]
 
 # Save model
 joblib.dump(best_rf, "random_forest_model.pkl")
@@ -74,13 +71,18 @@ joblib.dump(best_rf, "random_forest_model.pkl")
 # Save predictions to JSON
 predictions = {
     "y_true": y_test.tolist(),
-    "y_pred": y_pred.tolist(),
-    "roc_auc": float(roc_auc_score(y_test, y_prob)) if len(y.unique()) > 1 else None
+    "y_pred": y_pred.tolist()
 }
+
+# Add ROC AUC only if >1 class
+if len(y.unique()) > 1:
+    y_prob = best_rf.predict_proba(X_test)[:, 1]
+    predictions["roc_auc"] = float(roc_auc_score(y_test, y_prob))
+
 with open("defect_predictions.json", "w") as f:
     json.dump(predictions, f, indent=4)
 
-# Reports (plain text, no emoji)
+# Reports
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
 
@@ -90,4 +92,3 @@ print(confusion_matrix(y_test, y_pred))
 print("\nAccuracy Score:", accuracy_score(y_test, y_pred))
 if len(y.unique()) > 1:
     print("\nROC AUC Score:", roc_auc_score(y_test, y_prob))
-
