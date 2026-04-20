@@ -87,8 +87,8 @@ with open("policy.json", "r") as f:
 policy_loaded = {tuple(map(int, k.split("_"))): v for k, v in loaded_policy_json.items()}
 
 # 10. Demonstration
-print("✅ Q-Learning complete. Optimal pipeline actions learned.")
-print("Sample policy (state → best action):")
+print("Q-Learning complete. Optimal pipeline actions learned.")
+print("Sample policy (state,  best action):")
 
 for k, v in list(policy.items())[:10]:
     print(k, "→", v)
@@ -96,7 +96,7 @@ for k, v in list(policy.items())[:10]:
 # Example usage
 test_states = [(4, 3, 3), (3, 2, 1), (2, 0, 0)]
 for s in test_states:
-    print(f"State {s} → Action: {best_action(s, policy_loaded)}")
+    print(f"State {s},  Action: {best_action(s, policy_loaded)}")
 
 # 11. Visualization
 action_counts = pd.Series(list(policy.values())).value_counts()
