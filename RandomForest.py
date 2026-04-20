@@ -10,24 +10,52 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_auc_sco
 from sklearn.preprocessing import LabelEncoder
 from imblearn.over_sampling import SMOTE
 
-# ✅ Ensure UTF-8 encoding (fixes Windows CI issues)
+# -----------------------------
+# 1. Fix encoding for CI/CD
+# -----------------------------
 try:
     sys.stdout.reconfigure(encoding='utf-8')
 except:
     pass
 
 # -----------------------------
-# 1. Load dataset
+# 2. Load dataset
 # -----------------------------
 df = pd.read_csv("ML_Final_Final.csv")
 
 # -----------------------------
-# 2. Handle missing values (important for stability)
+# 3. Clean column names (VERY IMPORTANT)
+# -----------------------------
+df.columns = df.columns.str.strip()
+
+print("COLUMNS IN DATASET:")
+print(df.columns)
+
+# -----------------------------
+# 4. Auto-detect target column
+# -----------------------------
+possible_targets = ["DefectLabel", "Defect Label", "defectlabel", "Defect_Label"]
+
+target_col = None
+for col in possible_targets:
+    if col in df.columns:
+        target_col = col
+        break
+
+if target_col is None:
+    raise ValueError(
+        f"Target column not found. Available columns: {list(df.columns)}"
+    )
+
+print("Using target column:", target_col)
+
+# -----------------------------
+# 5. Handle missing values
 # -----------------------------
 df = df.fillna(0)
 
 # -----------------------------
-# 3. Encode categorical variables (Pandas 2/3 safe)
+# 6. Encode categorical variables
 # -----------------------------
 categorical_cols = df.select_dtypes(include=["object", "string"]).columns
 
@@ -38,16 +66,13 @@ for col in categorical_cols:
     label_encoders[col] = le
 
 # -----------------------------
-# 4. Separate features & target
+# 7. Split features & target
 # -----------------------------
-if "DefectLabel" not in df.columns:
-    raise ValueError("Target column 'DefectLabel' not found in dataset")
-
-X = df.drop("DefectLabel", axis=1)
-y = df["DefectLabel"]
+X = df.drop(target_col, axis=1)
+y = df[target_col]
 
 # -----------------------------
-# 5. Handle class imbalance
+# 8. Handle class imbalance (SMOTE)
 # -----------------------------
 smote = SMOTE(random_state=42)
 X_resampled, y_resampled = smote.fit_resample(X, y)
@@ -56,14 +81,16 @@ print("Class distribution after resampling:")
 print(y_resampled.value_counts())
 
 # -----------------------------
-# 6. Train-test split
+# 9. Train-test split
 # -----------------------------
 X_train, X_test, y_train, y_test = train_test_split(
-    X_resampled, y_resampled, test_size=0.2, random_state=42
+    X_resampled, y_resampled,
+    test_size=0.2,
+    random_state=42
 )
 
 # -----------------------------
-# 7. Model & hyperparameter tuning
+# 10. Model + hyperparameter tuning
 # -----------------------------
 rf = RandomForestClassifier(random_state=42)
 
@@ -89,20 +116,20 @@ best_rf = grid_search.best_estimator_
 print("Best Parameters:", grid_search.best_params_)
 
 # -----------------------------
-# 8. Predictions
+# 11. Predictions
 # -----------------------------
 y_pred = best_rf.predict(X_test)
 y_prob = best_rf.predict_proba(X_test)[:, 1]
 
 # -----------------------------
-# 9. Save model
+# 12. Save model
 # -----------------------------
 joblib.dump(best_rf, "random_forest_model.pkl")
 
 # -----------------------------
-# 10. Save predictions (safe JSON)
+# 13. Save results
 # -----------------------------
-predictions = {
+results = {
     "y_true": y_test.tolist(),
     "y_pred": y_pred.tolist(),
     "accuracy": float(accuracy_score(y_test, y_pred)),
@@ -110,10 +137,10 @@ predictions = {
 }
 
 with open("defect_predictions.json", "w", encoding="utf-8") as f:
-    json.dump(predictions, f, indent=4)
+    json.dump(results, f, indent=4)
 
 # -----------------------------
-# 11. Evaluation (NO emojis)
+# 14. Evaluation (CI-safe output)
 # -----------------------------
 print("\n=== Classification Report ===")
 print(classification_report(y_test, y_pred))
