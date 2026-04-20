@@ -16,7 +16,7 @@ print(df.columns.astype(str))
 
 # Ensure target column exists
 if "DefectLabel" not in df.columns:
-    print("DefectLabel not found → creating from DefectCount")
+    print("DefectLabel not found, creating from DefectCount")
     df["DefectLabel"] = (df["DefectCount"] > 0).astype(int)
 
 # Encode categorical variables (compatible with Pandas 2/3)
