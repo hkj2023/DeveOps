@@ -35,7 +35,7 @@ df["AnomalyFlag"] = df["Anomaly"].map({1: "Normal", -1: "Anomaly"})
 
 # 6. Save results
 df.to_csv("ML_unsupervised_isolation.csv", index=False)
-print("✅ Isolation Forest anomaly detection complete. Results saved as ML_unsupervised_isolation.csv")
+print("Isolation Forest anomaly detection complete. Results saved as ML_unsupervised_isolation.csv")
 
 # 7. Summary
 summary = df["AnomalyFlag"].value_counts()
@@ -85,4 +85,4 @@ decision = {k: (int(v) if isinstance(v, np.integer)
 with open("anomaly_decision.json", "w") as f:
     json.dump(decision, f, indent=4)
 
-print("✅ Anomaly decision JSON created successfully!")
+print("Anomaly decision JSON created successfully!")
