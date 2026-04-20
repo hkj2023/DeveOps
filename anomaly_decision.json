@@ -1,0 +1,8 @@
+{
+    "anomaly_detected": true,
+    "anomaly_count": 1000,
+    "total_records": 20000,
+    "anomaly_ratio": 0.05,
+    "action": "run_priority_tests",
+    "trigger_alert": false
+}
