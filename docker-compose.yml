@@ -22,3 +22,6 @@ services:
     command: python inference.py
     volumes:
       - ./defect_prediction.pkl:/app/defect_prediction.pkl
+      - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
+      - ./defect_prediction.pkl:/app/defect_prediction.pkl
+
