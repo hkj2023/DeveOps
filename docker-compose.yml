@@ -1,17 +1,24 @@
-version: '3'
 services:
   prep:
-    image: desu2026/prep-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.prep
     command: python prep.py
+    volumes:
+      - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
+
   train:
-    image: desu2026/train-app:latest
-    depends_on:
-      - prep
+    build:
+      context: .
+      dockerfile: Dockerfile.train
     command: python RandomForest.py
+    volumes:
+      - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
+
   inference:
-    image: desu2026/inference-app:latest
-    depends_on:
-      - train
-    ports:
-      - "5000:5000"
+    build:
+      context: .
+      dockerfile: Dockerfile.inference
     command: python inference.py
+    volumes:
+      - ./defect_prediction.pkl:/app/defect_prediction.pkl
