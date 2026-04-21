@@ -3,4 +3,5 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY inference.py .
-CMD ["python", "inference.py"]
+COPY defect_prediction.pkl .
+CMD ["python", "app.py"]
