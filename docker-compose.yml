@@ -1,0 +1,17 @@
+version: '3'
+services:
+  prep:
+    image: desu2026/prep-app:latest
+    command: python prep.py
+  train:
+    image: desu2026/train-app:latest
+    depends_on:
+      - prep
+    command: python train.py
+  inference:
+    image: desu2026/inference-app:latest
+    depends_on:
+      - train
+    ports:
+      - "5000:5000"
+    command: python app.py
