@@ -14,4 +14,4 @@ services:
       - train
     ports:
       - "5000:5000"
-    command: python app.py
+    command: python inference.py
