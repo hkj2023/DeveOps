@@ -7,7 +7,7 @@ services:
     image: desu2026/train-app:latest
     depends_on:
       - prep
-    command: python train.py
+    command: python RandomForest.py
   inference:
     image: desu2026/inference-app:latest
     depends_on:
