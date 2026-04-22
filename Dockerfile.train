@@ -1,7 +1,14 @@
 FROM python:3.10
 WORKDIR /app
+
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+
 COPY RandomForest.py .
 COPY ML_Final_Final.csv .
+
+# If defect_prediction.pkl already exists in repo, copy it in
+COPY defect_prediction.pkl .
+
 CMD ["python", "RandomForest.py"]
+
