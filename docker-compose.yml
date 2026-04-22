@@ -6,6 +6,7 @@ services:
     command: python prep.py
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
+      - ./shared:/app/shared
 
   train:
     build:
@@ -14,6 +15,9 @@ services:
     command: python RandomForest.py
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
+      - ./shared:/app/shared
+    depends_on:
+      - prep
 
   inference:
     build:
@@ -21,7 +25,8 @@ services:
       dockerfile: Dockerfile.inference
     command: python inference.py
     volumes:
-      - ./defect_prediction.pkl:/app/defect_prediction.pkl
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
       - ./defect_prediction.pkl:/app/defect_prediction.pkl
-
+      - ./shared:/app/shared
+    depends_on:
+      - train
