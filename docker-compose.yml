@@ -1,13 +1,4 @@
-version: "3.9"
 services:
-  prep:
-    build:
-      context: .
-      dockerfile: Dockerfile.prep
-    command: python prep.py
-    volumes:
-      - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
-
   train:
     build:
       context: .
