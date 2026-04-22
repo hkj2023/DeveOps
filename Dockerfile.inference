@@ -5,6 +5,5 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY inference.py .
-COPY ML_Final_Final.csv .
 
 CMD ["python", "inference.py"]
