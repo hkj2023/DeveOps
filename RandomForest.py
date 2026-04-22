@@ -5,12 +5,12 @@ import pickle
 # Load dataset
 df = pd.read_csv("ML_Final_Final.csv")
 
-# Drop non-numeric columns (IDs, strings)
+# Drop non-numeric ID columns
 df = df.drop(columns=["CommitID", "BuildID", "TestID"], errors='ignore')
 
-# Separate features and target
-X = df.drop("DefectLabel", axis=1)
-y = df["DefectLabel"]
+# Target column (FIXED)
+y = df["BugFlag"]
+X = df.drop("BugFlag", axis=1)
 
 # Train model
 model = RandomForestClassifier()
@@ -20,4 +20,4 @@ model.fit(X, y)
 with open("defect_prediction.pkl", "wb") as f:
     pickle.dump(model, f)
 
-print("Model trained and saved successfully")
+print("Model trained and saved successfully!")
