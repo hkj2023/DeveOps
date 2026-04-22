@@ -10,8 +10,8 @@ df = pd.read_csv("ML_Final_Final.csv")
 if "DefectLabel" not in df.columns and "DefectCount" in df.columns:
     df["DefectLabel"] = (df["DefectCount"] > 500).astype(int)
 
-# Align dataset with training features
-X = df[feature_names]
+# Align dataset safely
+X = df.reindex(columns=feature_names, fill_value=0)
 
 predictions = model.predict(X)
 
