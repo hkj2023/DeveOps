@@ -6,12 +6,19 @@ model, feature_names = joblib.load("defect_prediction.pkl")
 
 df = pd.read_csv("ML_Final_Final.csv")
 
-# Create target if missing
+# Create DefectLabel if missing
 if "DefectLabel" not in df.columns and "DefectCount" in df.columns:
     df["DefectLabel"] = (df["DefectCount"] > 500).astype(int)
 
-# Align dataset safely
-X = df.reindex(columns=feature_names, fill_value=0)
+# Apply same encoding
+X = df.drop("DefectLabel", axis=1)
+X = pd.get_dummies(X)
+
+# Align with training features (fill missing with 0)
+for col in feature_names:
+    if col not in X.columns:
+        X[col] = 0
+X = X[feature_names]
 
 predictions = model.predict(X)
 

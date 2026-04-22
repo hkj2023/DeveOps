@@ -1,23 +1,26 @@
 import pandas as pd
+import joblib
 from sklearn.ensemble import RandomForestClassifier
-import pickle
 
 # Load dataset
 df = pd.read_csv("ML_Final_Final.csv")
 
-# Drop non-numeric ID columns
-df = df.drop(columns=["CommitID", "BuildID", "TestID"], errors='ignore')
+# Create DefectLabel from DefectCount if missing
+if "DefectLabel" not in df.columns and "DefectCount" in df.columns:
+    df["DefectLabel"] = (df["DefectCount"] > 500).astype(int)
 
-# Target column (FIXED)
-y = df["BugFlag"]
-X = df.drop("BugFlag", axis=1)
+# Separate features and target
+X = df.drop("DefectLabel", axis=1)
+y = df["DefectLabel"]
+
+# Convert categorical/string columns to numeric (one-hot encoding)
+X = pd.get_dummies(X)
 
 # Train model
 model = RandomForestClassifier()
 model.fit(X, y)
 
-# Save model
-with open("defect_prediction.pkl", "wb") as f:
-    pickle.dump(model, f)
+# Save model + feature names
+joblib.dump((model, list(X.columns)), "defect_prediction.pkl")
 
-print("Model trained and saved successfully!")
+print("Training completed. Model and feature names saved to defect_prediction.pkl")
