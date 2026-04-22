@@ -6,7 +6,7 @@ services:
     command: python RandomForest.py
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
-      - ./defect_prediction.pkl:/app/defect_prediction.pkl
+      - ./outputs:/app/outputs   # <-- store model here
 
   inference:
     build:
@@ -15,8 +15,6 @@ services:
     command: python inference.py
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
-      - ./defect_prediction.pkl:/app/defect_prediction.pkl
-      - ./inference_output.csv:/app/inference_output.csv
+      - ./outputs:/app/outputs   # <-- read model + write predictions
     depends_on:
       - train
-

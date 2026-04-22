@@ -1,0 +1,20 @@
+# Ignore datasets (we mount them as volumes instead)
+*.csv
+
+# Ignore model artifacts (we mount outputs/ instead)
+*.pkl
+outputs/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore logs
+*.log
+
+# Ignore OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

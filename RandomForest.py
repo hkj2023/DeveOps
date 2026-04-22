@@ -21,6 +21,5 @@ model = RandomForestClassifier()
 model.fit(X, y)
 
 # Save model + feature names
-joblib.dump((model, list(X.columns)), "defect_prediction.pkl")
-
+joblib.dump((model, list(X.columns)), "outputs/defect_prediction.pkl")
 print("Training completed. Model and feature names saved to defect_prediction.pkl")

@@ -2,7 +2,8 @@ import joblib
 import pandas as pd
 
 # Load model and feature names
-model, feature_names = joblib.load("defect_prediction.pkl")
+model, feature_names = joblib.load("outputs/defect_prediction.pkl")
+output.to_csv("outputs/inference_output.csv", index=False)
 
 df = pd.read_csv("ML_Final_Final.csv")
 
