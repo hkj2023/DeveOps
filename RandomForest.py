@@ -17,7 +17,17 @@ y = df["DefectLabel"]
 X = pd.get_dummies(X)
 
 # Train model
-model = RandomForestClassifier()
+# model = RandomForestClassifier()
+# model.fit(X, y)
+
+# Define the model with resource‑friendly parameters
+model = RandomForestClassifier(
+    n_estimators=100,   # fewer trees
+    max_depth=20,       # limit depth
+    n_jobs=-1,          # use all cores
+    random_state=42
+)
+# Train model
 model.fit(X, y)
 
 # Save model + feature names
