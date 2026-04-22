@@ -12,5 +12,5 @@ if os.path.exists("defect_prediction.pkl"):
 else:
     model = RandomForestClassifier()
     model.fit(X, y)
-    joblib.dump(model, "defect_prediction.pkl")
+    joblib.dump((model, list(X.columns)), "defect_prediction.pkl")
     print("Training completed. Model saved to defect_prediction.pkl")
