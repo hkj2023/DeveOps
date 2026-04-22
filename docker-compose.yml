@@ -16,6 +16,7 @@ services:
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
       - ./defect_prediction.pkl:/app/defect_prediction.pkl
-      - ./inference_output.csv:/app/inference_output.csv   # <-- mount output file
+      - ./inference_output.csv:/app/inference_output.csv
     depends_on:
       - train
+
