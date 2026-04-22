@@ -1,20 +1,20 @@
-import pandas as pd
 import joblib
+import pandas as pd
 
-# Load the trained model (saved in RandomForest.py)
+# Load trained model
 model = joblib.load("defect_prediction.pkl")
 
-# Load new data for inference
-# Example: if you want to predict on a CSV file with unseen data
-new_data = pd.read_csv("processed_data.csv")   # <-- replace with your actual file
+# Load raw dataset
+df = pd.read_csv("ML_Final_Final.csv")
 
-# Make predictions
-predictions = model.predict(new_data)
+# Drop target column if exists
+X = df.drop("DefectLabel", axis=1) if "DefectLabel" in df.columns else df
 
-print("Predictions:", predictions)
+# Predict
+predictions = model.predict(X)
+
 # Save results
-output = pd.DataFrame({"predictions": predictions})
+output = pd.DataFrame({"prediction": predictions})
 output.to_csv("inference_output.csv", index=False)
 
 print("Inference completed. Results saved to inference_output.csv")
-
