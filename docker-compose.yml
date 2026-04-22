@@ -1,3 +1,4 @@
+version: "3.9"
 services:
   prep:
     build:
@@ -6,7 +7,6 @@ services:
     command: python prep.py
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
-      - ./shared:/app/shared
 
   train:
     build:
@@ -15,7 +15,7 @@ services:
     command: python RandomForest.py
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
-      - ./shared:/app/shared
+      - ./defect_prediction.pkl:/app/defect_prediction.pkl
     depends_on:
       - prep
 
@@ -27,6 +27,5 @@ services:
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
       - ./defect_prediction.pkl:/app/defect_prediction.pkl
-      - ./shared:/app/shared
     depends_on:
       - train
