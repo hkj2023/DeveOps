@@ -6,7 +6,7 @@ services:
     command: python RandomForest.py
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
-      - ./outputs:/app/outputs   # <-- store model here
+      - ./outputs:/app/outputs
 
   inference:
     build:
@@ -15,6 +15,6 @@ services:
     command: python inference.py
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
-      - ./outputs:/app/outputs   # <-- read model + write predictions
+      - ./outputs:/app/outputs
     depends_on:
       - train
