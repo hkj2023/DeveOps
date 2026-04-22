@@ -1,7 +1,6 @@
 import pandas as pd
 import joblib
 from sklearn.ensemble import RandomForestClassifier
-import os
 
 df = pd.read_csv("ML_Final_Final.csv")
 
@@ -15,7 +14,7 @@ y = df["DefectLabel"]
 model = RandomForestClassifier()
 model.fit(X, y)
 
-# Save both model and feature names together
+# Always overwrite with (model, feature_names)
 joblib.dump((model, list(X.columns)), "defect_prediction.pkl")
 
 print("Training completed. Model + feature names saved to defect_prediction.pkl")
