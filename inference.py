@@ -1,10 +1,18 @@
 import joblib
 import pandas as pd
 
-model = joblib.load("defect_prediction.pkl")
+# Load model and feature names
+model, feature_names = joblib.load("defect_prediction.pkl")
+
 df = pd.read_csv("ML_Final_Final.csv")
 
-X = df.drop("DefectLabel", axis=1) if "DefectLabel" in df.columns else df
+# Create target if missing
+if "DefectLabel" not in df.columns and "DefectCount" in df.columns:
+    df["DefectLabel"] = (df["DefectCount"] > 500).astype(int)
+
+# Align dataset with training features
+X = df[feature_names]
+
 predictions = model.predict(X)
 
 output = pd.DataFrame({"prediction": predictions})
