@@ -1,24 +1,15 @@
 import os
 import pandas as pd
-import joblib
 
-MODEL_PATH = "outputs/defect_prediction.pkl"
+OUTPUT_PATH = "outputs/inference_output.csv"
 
-# Ensure model exists
-if not os.path.exists(MODEL_PATH):
-    raise FileNotFoundError(f"Model file not found at {MODEL_PATH}. Run training first.")
+# Ensure predictions file exists
+if not os.path.exists(OUTPUT_PATH):
+    raise FileNotFoundError(f"Inference output file not found at {OUTPUT_PATH}. Run inference stage first.")
 
-# Load model and feature names
-model, feature_names = joblib.load(MODEL_PATH)
+# Load predictions
+df = pd.read_csv(OUTPUT_PATH)
 
-# Load new input data
-df = pd.read_csv("new_data.csv")   # mount this file at runtime
-X = pd.get_dummies(df)
-
-# Align columns with training features
-X = X.reindex(columns=feature_names, fill_value=0)
-
-# Run predictions
-predictions = model.predict(X)
-print("Predictions:", predictions)
+print(f"Loaded predictions from {OUTPUT_PATH}:")
+print(df.head())   # show first few rows
 

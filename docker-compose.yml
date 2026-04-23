@@ -10,11 +10,10 @@ services:
       - ./outputs:/app/outputs
     command: python RandomForest.py
 
-  inference:
-    build:
-      context: .
-      dockerfile: Dockerfile.inference
-    volumes:
-      - ./outputs:/app/outputs
-      - ./new_data.csv:/app/new_data.csv
-    command: python inference.py
+inference:
+  build:
+    context: .
+    dockerfile: Dockerfile.inference
+  volumes:
+    - ./outputs:/app/outputs   # contains defect_prediction.pkl + inference_output.csv
+  command: python inference.py
