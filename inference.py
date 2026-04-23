@@ -3,7 +3,7 @@ import pandas as pd
 import joblib
 
 MODEL_PATH = "outputs/defect_prediction.pkl"
-DATA_PATH = "outputs/new_data.csv"        # <-- fixed path
+DATA_PATH = "outputs/new_data.csv"        # correct path inside outputs
 OUTPUT_PATH = "outputs/inference_output.csv"
 
 # Ensure model exists
@@ -19,6 +19,8 @@ model, feature_names = joblib.load(MODEL_PATH)
 
 # Load new unseen data
 df = pd.read_csv(DATA_PATH)
+
+# Align columns with training features
 X = df.reindex(columns=feature_names, fill_value=0)
 
 # Run predictions
