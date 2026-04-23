@@ -11,16 +11,18 @@ os.makedirs("outputs", exist_ok=True)
 # Load raw dataset
 df = pd.read_csv(RAW_PATH)
 
-# Encode features
-df_clean = pd.get_dummies(df.dropna())
+# Separate target column (replace 'TargetColumn' with your actual label column)
+y = df["TargetColumn"]
+X = df.drop("TargetColumn", axis=1)
 
-X = df_clean.drop("TargetColumn", axis=1)   # replace with your target column
-y = df_clean["TargetColumn"]
+# One-hot encode categorical features
+X_encoded = pd.get_dummies(X)
 
+# Train model
 model = RandomForestClassifier(random_state=42)
-model.fit(X, y)
+model.fit(X_encoded, y)
 
 # Save model and feature names
-joblib.dump((model, X.columns.tolist()), MODEL_PATH)
+joblib.dump((model, X_encoded.columns.tolist()), MODEL_PATH)
 
 print(f"Model saved to {MODEL_PATH}")
