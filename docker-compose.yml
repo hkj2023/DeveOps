@@ -10,11 +10,11 @@ services:
       - ./outputs:/app/outputs
     command: python RandomForest.py
 
-inference:
-  build:
-    context: .
-    dockerfile: Dockerfile.inference
-  volumes:
-    - ./outputs:/app/outputs        # trained model
-    - ./new_data.csv:/app/new_data.csv   # new input data
-  command: python inference.py
+  inference:
+    build:
+      context: .
+      dockerfile: Dockerfile.inference
+    volumes:
+      - ./outputs:/app/outputs
+      - ./new_data.csv:/app/new_data.csv
+    command: python inference.py
