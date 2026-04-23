@@ -1,6 +1,3 @@
-# Ignore datasets (we mount them as volumes instead)
-*.csv
-
 # Ignore model artifacts (we mount outputs/ instead)
 *.pkl
 outputs/
