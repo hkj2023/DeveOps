@@ -19,9 +19,10 @@ services:
     command: python RandomForest.py
 
   inference:
-    build:
-      context: .
-      dockerfile: Dockerfile.inference
-    volumes:
-      - ./outputs:/app/outputs
-    command: python inference.py
+  build:
+    context: .
+    dockerfile: Dockerfile.inference
+  volumes:
+    - ./outputs:/app/outputs
+  command: python inference.py
+
