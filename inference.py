@@ -1,37 +1,24 @@
-import os
-import joblib
-import pandas as pd
 
-# Ensure outputs folder exists
-os.makedirs("outputs", exist_ok=True)
+import os
+import pandas as pd
+import joblib
+
+MODEL_PATH = "outputs/defect_prediction.pkl"
+
+# Check if model exists
+if not os.path.exists(MODEL_PATH):
+    raise FileNotFoundError(f"Model file not found at {MODEL_PATH}. Run training first.")
 
 # Load model and feature names
-model, feature_names = joblib.load("outputs/defect_prediction.pkl")
+model, feature_names = joblib.load(MODEL_PATH)
 
-# Load dataset
-df = pd.read_csv("ML_Final_Final.csv")
+# Load new data for prediction
+df = pd.read_csv("new_data.csv")   # mount this file at runtime
+X = pd.get_dummies(df)
 
-# Create DefectLabel if missing
-if "DefectLabel" not in df.columns and "DefectCount" in df.columns:
-    df["DefectLabel"] = (df["DefectCount"] > 500).astype(int)
-
-# Prepare features (one-hot encode categorical)
-X = df.drop("DefectLabel", axis=1)
-X = pd.get_dummies(X)
-
-# Align with training features
-for col in feature_names:
-    if col not in X.columns:
-        X[col] = 0
-X = X[feature_names]
+# Align columns with training features
+X = X.reindex(columns=feature_names, fill_value=0)
 
 # Run predictions
 predictions = model.predict(X)
-
-# Build output DataFrame
-output = pd.DataFrame({"prediction": predictions})
-
-# Save results
-output.to_csv("outputs/inference_output.csv", index=False)
-
-print("Inference completed. Results saved to outputs/inference_output.csv")
+print("Predictions:", predictions)
