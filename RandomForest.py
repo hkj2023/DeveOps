@@ -1,34 +1,51 @@
+# ==========================================
+# Defect Prediction with Random Forest
+# ==========================================
+
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
 import joblib
 import os
+from sklearn.ensemble import RandomForestClassifier
 
 RAW_PATH = "ML_Final_Final.csv"
 MODEL_PATH = "outputs/defect_prediction.pkl"
 
 os.makedirs("outputs", exist_ok=True)
 
+# -----------------------------
+# 1. Load dataset
+# -----------------------------
 df = pd.read_csv(RAW_PATH)
 
-TARGET_COL = "TargetColumn"
+# -----------------------------
+# 2. Create binary target from DefectCount
+# -----------------------------
+# Rule: DefectLabel = 1 if DefectCount > 400, else 0
+df["DefectLabel"] = (df["DefectCount"] > 400).astype(int)
 
-# Encode target column if it's categorical
-y = df[TARGET_COL].astype("category").cat.codes
+y = df["DefectLabel"]
 
-# Drop target from features
-X = df.drop(columns=[TARGET_COL])
+# -----------------------------
+# 3. Prepare features
+# -----------------------------
+# Drop DefectCount and DefectLabel from features
+X = df.drop(columns=["DefectCount", "DefectLabel"])
 
-# One-hot encode categorical features
-X = pd.get_dummies(X)
+# One-hot encode categorical features (critical fix)
+X_encoded = pd.get_dummies(X)
 
-# Save column schema
-feature_names = X.columns.tolist()
+# Save schema
+feature_names = X_encoded.columns.tolist()
 
-# Train model
+# -----------------------------
+# 4. Train model
+# -----------------------------
 model = RandomForestClassifier(random_state=42)
-model.fit(X, y)
+model.fit(X_encoded, y)
 
-# Save model + schema
+# -----------------------------
+# 5. Save model + schema
+# -----------------------------
 joblib.dump((model, feature_names), MODEL_PATH)
 
-print("Model trained and saved successfully")
+print("✅ Model trained and saved successfully")
