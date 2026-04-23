@@ -1,4 +1,15 @@
+version: "3.9"
+
 services:
+  train:
+    build:
+      context: .
+      dockerfile: Dockerfile.train
+    volumes:
+      - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
+      - ./outputs:/app/outputs
+    command: python RandomForest.py
+
   prep:
     build:
       context: .
@@ -7,16 +18,6 @@ services:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
       - ./outputs:/app/outputs
     command: python prep.py
-
-
-train:
-  build:
-    context: .
-    dockerfile: Dockerfile.train
-  volumes:
-    - ./ML_Final_Final.csv:/app/ML_Final_Final.csv   # <-- mount dataset
-    - ./outputs:/app/outputs
-  command: python RandomForest.py
 
   inference:
     build:
