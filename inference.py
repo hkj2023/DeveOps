@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import joblib
+print("FILES IN /app:", os.listdir())
 
 MODEL_PATH = "outputs/defect_prediction.pkl"
 DATA_PATH = "outputs/new_data.csv"
@@ -13,7 +14,6 @@ if not os.path.exists(DATA_PATH):
 
 model, feature_names = joblib.load(MODEL_PATH)
 
-df = pd.read_csv(DATA_PATH)
 X = df.reindex(columns=feature_names, fill_value=0)
 
 predictions = model.predict(X)
