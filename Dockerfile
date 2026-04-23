@@ -1,7 +1,10 @@
 FROM python:3.10
 WORKDIR /app
+
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY ML_Final_Final.csv .
-COPY . .
+
+COPY RandomForest.py .
+COPY ML_Final_Final.csv /app/ML_Final_Final.csv
+
 CMD ["python", "RandomForest.py"]
