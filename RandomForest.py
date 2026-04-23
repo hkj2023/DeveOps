@@ -20,19 +20,17 @@ df = pd.read_csv(RAW_PATH)
 # -----------------------------
 # 2. Create binary target from DefectCount
 # -----------------------------
-# Rule: DefectLabel = 1 if DefectCount > 400, else 0
 df["DefectLabel"] = (df["DefectCount"] > 400).astype(int)
-
 y = df["DefectLabel"]
 
 # -----------------------------
 # 3. Prepare features
 # -----------------------------
-# Drop DefectCount and DefectLabel from features
+# Drop target + raw DefectCount
 X = df.drop(columns=["DefectCount", "DefectLabel"])
 
-# One-hot encode categorical features (critical fix)
-X_encoded = pd.get_dummies(X)
+# Force one-hot encoding on ALL non-numeric columns
+X_encoded = pd.get_dummies(X, drop_first=False)
 
 # Save schema
 feature_names = X_encoded.columns.tolist()
@@ -48,4 +46,4 @@ model.fit(X_encoded, y)
 # -----------------------------
 joblib.dump((model, feature_names), MODEL_PATH)
 
-print("✅ Model trained and saved successfully")
+print("Model trained and saved successfully")
