@@ -5,5 +5,5 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY RandomForest.py .
-COPY ML_Final_Final.csv .
+# no COPY ML_Final_Final.csv here
 CMD ["python", "RandomForest.py"]

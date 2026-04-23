@@ -6,18 +6,15 @@ services:
       context: .
       dockerfile: Dockerfile.train
     volumes:
-      - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
-      - ./outputs:/app/outputs
+      - ./ML_Final_Final.csv:/app/ML_Final_Final.csv   # mount dataset
+      - ./outputs:/app/outputs                        # mount outputs folder
     command: python RandomForest.py
-
 
   inference:
     build:
       context: .
       dockerfile: Dockerfile.inference
     volumes:
-      - ./outputs:/app/outputs
-      - ./new_data.csv:/app/new_data.csv   # optional: mount new data for predictions
-    depends_on:
-      - train
+      - ./outputs:/app/outputs                        # share trained model
+      - ./new_data.csv:/app/new_data.csv              # optional: mount new data
     command: python inference.py
