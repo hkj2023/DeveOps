@@ -8,8 +8,8 @@ services:
     volumes:
       - ./ML_Final_Final.csv:/app/ML_Final_Final.csv
       - ./outputs:/app/outputs
-    # Only runs when you explicitly call it
     command: python RandomForest.py
+
 
   inference:
     build:
