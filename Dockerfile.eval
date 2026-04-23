@@ -11,9 +11,6 @@ COPY eval.py .
 COPY ML_Final_Final.csv .
 COPY requirements.txt .
 
-# Copy outputs folder if it exists (model, etc.)
-COPY outputs ./outputs
-
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
