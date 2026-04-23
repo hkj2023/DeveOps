@@ -12,18 +12,23 @@ df = pd.read_csv(RAW_PATH)
 
 TARGET_COL = "TargetColumn"
 
-y = df[TARGET_COL]
+# Encode target column if it's categorical
+y = df[TARGET_COL].astype("category").cat.codes
+
+# Drop target from features
 X = df.drop(columns=[TARGET_COL])
 
-# ✅ FORCE consistent encoding (IMPORTANT FIX)
+# One-hot encode categorical features
 X = pd.get_dummies(X)
 
-# Save column schema FIRST (critical)
+# Save column schema
 feature_names = X.columns.tolist()
 
+# Train model
 model = RandomForestClassifier(random_state=42)
 model.fit(X, y)
 
+# Save model + schema
 joblib.dump((model, feature_names), MODEL_PATH)
 
 print("Model trained and saved successfully")
