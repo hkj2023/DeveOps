@@ -3,24 +3,24 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 import os
 
-DATA_PATH = DATA_PATH = "ML_Final_Final.csv"
+RAW_PATH = "ML_Final_Final.csv"
 MODEL_PATH = "outputs/defect_prediction.pkl"
 
-if not os.path.exists(DATA_PATH):
-    raise FileNotFoundError(f"{DATA_PATH} not found. Run prep first.")
+os.makedirs("outputs", exist_ok=True)
 
-# Load processed data
-df = pd.read_csv(DATA_PATH)
+# Load raw dataset
+df = pd.read_csv(RAW_PATH)
 
-# Assume last column is target
-X = df.iloc[:, :-1]
-y = df.iloc[:, -1]
+# Encode features
+df_clean = pd.get_dummies(df.dropna())
 
-# Train model
-model = RandomForestClassifier(n_estimators=100, random_state=42)
+X = df_clean.drop("TargetColumn", axis=1)   # replace with your target column
+y = df_clean["TargetColumn"]
+
+model = RandomForestClassifier(random_state=42)
 model.fit(X, y)
 
-# Save model + feature names
+# Save model and feature names
 joblib.dump((model, X.columns.tolist()), MODEL_PATH)
 
 print(f"Model saved to {MODEL_PATH}")
