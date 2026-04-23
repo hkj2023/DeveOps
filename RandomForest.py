@@ -1,7 +1,3 @@
-# ==========================================
-# Defect Prediction with Random Forest
-# ==========================================
-
 import pandas as pd
 import joblib
 import os
@@ -12,38 +8,27 @@ MODEL_PATH = "outputs/defect_prediction.pkl"
 
 os.makedirs("outputs", exist_ok=True)
 
-# -----------------------------
-# 1. Load dataset
-# -----------------------------
+# Load dataset
 df = pd.read_csv(RAW_PATH)
 
-# -----------------------------
-# 2. Create binary target from DefectCount
-# -----------------------------
+# Create binary target from DefectCount > 400
 df["DefectLabel"] = (df["DefectCount"] > 400).astype(int)
 y = df["DefectLabel"]
 
-# -----------------------------
-# 3. Prepare features
-# -----------------------------
 # Drop target + raw DefectCount
 X = df.drop(columns=["DefectCount", "DefectLabel"])
 
-# Force one-hot encoding on ALL non-numeric columns
+# One-hot encode ALL non-numeric columns
 X_encoded = pd.get_dummies(X, drop_first=False)
 
 # Save schema
 feature_names = X_encoded.columns.tolist()
 
-# -----------------------------
-# 4. Train model
-# -----------------------------
+# Train model
 model = RandomForestClassifier(random_state=42)
-model.fit(X_encoded, y)
+model.fit(X_encoded, y)   # <-- IMPORTANT: use X_encoded, not X
 
-# -----------------------------
-# 5. Save model + schema
-# -----------------------------
+# Save model + schema
 joblib.dump((model, feature_names), MODEL_PATH)
 
 print("Model trained and saved successfully")
