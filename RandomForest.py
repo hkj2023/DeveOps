@@ -3,7 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 import os
 
-DATA_PATH = "outputs/processed_data.csv"
+DATA_PATH = DATA_PATH = "ML_Final_Final.csv"
 MODEL_PATH = "outputs/defect_prediction.pkl"
 
 if not os.path.exists(DATA_PATH):
