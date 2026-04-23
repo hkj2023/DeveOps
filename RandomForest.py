@@ -1,39 +1,26 @@
-import os
 import pandas as pd
-import joblib
 from sklearn.ensemble import RandomForestClassifier
+import joblib
+import os
 
+DATA_PATH = "outputs/processed_data.csv"
 MODEL_PATH = "outputs/defect_prediction.pkl"
 
-# Skip training if model already exists
-if os.path.exists(MODEL_PATH):
-    print(f"Model already exists at {MODEL_PATH}. Skipping training.")
-else:
-    # Load dataset
-    df = pd.read_csv("ML_Final_Final.csv")
-    print("Dataset loaded with shape:", df.shape)
+if not os.path.exists(DATA_PATH):
+    raise FileNotFoundError(f"{DATA_PATH} not found. Run prep first.")
 
-    # Create DefectLabel from DefectCount if missing
-    if "DefectLabel" not in df.columns and "DefectCount" in df.columns:
-        df["DefectLabel"] = (df["DefectCount"] > 500).astype(int)
+# Load processed data
+df = pd.read_csv(DATA_PATH)
 
-    # Separate features and target
-    X = df.drop("DefectLabel", axis=1)
-    y = df["DefectLabel"]
+# Assume last column is target
+X = df.iloc[:, :-1]
+y = df.iloc[:, -1]
 
-    # Convert categorical/string columns to numeric (one-hot encoding)
-    X = pd.get_dummies(X)
+# Train model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X, y)
 
-    # Define the model with resource‑friendly parameters
-    model = RandomForestClassifier(
-        n_estimators=100,
-        max_depth=20,
-        n_jobs=-1,
-        random_state=42
-    )
-    model.fit(X, y)
+# Save model + feature names
+joblib.dump((model, X.columns.tolist()), MODEL_PATH)
 
-    # Save model + feature names
-    os.makedirs("outputs", exist_ok=True)
-    joblib.dump((model, list(X.columns)), MODEL_PATH)
-    print(f"Training completed. Model saved to {MODEL_PATH}")
+print(f"Model saved to {MODEL_PATH}")
