@@ -18,17 +18,21 @@ y = df["DefectLabel"]
 # Drop target + raw DefectCount
 X = df.drop(columns=["DefectCount", "DefectLabel"])
 
-# One-hot encode ALL non-numeric columns
-X_encoded = pd.get_dummies(X, drop_first=False)
+# --- FIX: Encode categorical columns ---
+# Detect non-numeric columns automatically
+categorical_cols = X.select_dtypes(include=["object", "bool"]).columns
 
-# Save schema
+# One-hot encode categorical columns
+X_encoded = pd.get_dummies(X, columns=categorical_cols, drop_first=False)
+
+# Save schema (feature names)
 feature_names = X_encoded.columns.tolist()
 
-# Train model
+# Train model on encoded features
 model = RandomForestClassifier(random_state=42)
-model.fit(X_encoded, y)   # <-- IMPORTANT: use X_encoded, not X
+model.fit(X_encoded, y)
 
-# Save model + schema
-joblib.dump((model, feature_names), MODEL_PATH)
+# Save model + schema together
+joblib.dump({"model": model, "features": feature_names}, MODEL_PATH)
 
 print("Model trained and saved successfully")
