@@ -10,6 +10,16 @@ services:
       - ./outputs:/app/outputs
     command: python RandomForest.py
 
+  eval:
+    build:
+      context: .
+      dockerfile: Dockerfile.eval
+    container_name: eval-app
+    depends_on:
+      - train
+    volumes:
+      - ./outputs:/app/outputs
+
   prep:
     build:
       context: .
