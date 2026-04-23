@@ -8,24 +8,22 @@ MODEL_PATH = "outputs/defect_prediction.pkl"
 
 os.makedirs("outputs", exist_ok=True)
 
-# Load dataset
 df = pd.read_csv(RAW_PATH)
 
-# ⚠️ Replace with your actual target column name
 TARGET_COL = "TargetColumn"
 
-# Split features and target
 y = df[TARGET_COL]
 X = df.drop(columns=[TARGET_COL])
 
-# ✅ Convert ALL categorical columns to numeric
+# ✅ FORCE consistent encoding (IMPORTANT FIX)
 X = pd.get_dummies(X)
 
-# Train model
+# Save column schema FIRST (critical)
+feature_names = X.columns.tolist()
+
 model = RandomForestClassifier(random_state=42)
 model.fit(X, y)
 
-# Save model + feature names for inference alignment
-joblib.dump((model, X.columns.tolist()), MODEL_PATH)
+joblib.dump((model, feature_names), MODEL_PATH)
 
-print(f"Model saved to {MODEL_PATH}")
+print("Model trained and saved successfully")
