@@ -11,10 +11,11 @@ services:
     command: python RandomForest.py
 
   inference:
-    build:
-      context: .
-      dockerfile: Dockerfile.inference
-    volumes:
-      - ./outputs:/app/outputs                        # share trained model
-      - ./new_data.csv:/app/new_data.csv              # optional: mount new data
-    command: python inference.py
+  build:
+    context: .
+    dockerfile: Dockerfile.inference
+  volumes:
+    - ./outputs:/app/outputs   # mount trained model here
+    - ./new_data.csv:/app/new_data.csv   # optional: mount new data for predictions
+  command: python inference.py
+

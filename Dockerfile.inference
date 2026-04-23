@@ -5,5 +5,5 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY inference.py .
-COPY outputs/defect_prediction.pkl ./outputs/defect_prediction.pkl
+# ❌ remove COPY outputs/defect_prediction.pkl
 CMD ["python", "inference.py"]
