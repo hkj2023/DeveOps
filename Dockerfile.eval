@@ -1,18 +1,16 @@
 # Dockerfile.eval
 FROM python:3.9-slim
+FROM python:3.10-slim 
 
 WORKDIR /app
 
-# Copy scripts and raw dataset
+COPY RandomForest.py .
 COPY prep.py .
 COPY inference.py .
-COPY RandomForest.py .
 COPY eval.py .
 COPY ML_Final_Final.csv .
 COPY requirements.txt .
 
-# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run evaluation pipeline
 CMD ["python", "eval.py"]
