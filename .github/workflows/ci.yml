@@ -48,7 +48,7 @@ jobs:
       with:
         name: Pytest Results
         path: pytest-report.xml
-        reporter: junit
+        reporter: java-junit
     - name: Upload Pytest Report Artifact
       uses: actions/upload-artifact@v4
       with:
