@@ -12,5 +12,6 @@ COPY ML_Final_Final.csv .
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir pandas==2.2.2 scikit-learn==1.3.2 joblib==1.4.2
 
 CMD ["python", "eval.py"]
