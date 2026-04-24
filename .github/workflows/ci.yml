@@ -31,10 +31,10 @@ jobs:
         with:
           name: model
           path: outputs/defect_prediction.pkl
-testing:
-  runs-on: ubuntu-latest
-  needs: training
-  steps:
+  testing:
+   runs-on: ubuntu-latest
+   needs: training
+   steps:
     - uses: actions/checkout@v4
     - name: Install dependencies for testing
       run: |
