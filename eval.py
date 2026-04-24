@@ -10,10 +10,8 @@ def run_step(script_name):
         print(result.stdout)
 
 if __name__ == "__main__":
-    # Step 1: Prepare new unseen data
-    run_step("prep.py")
-
-    # Step 2: Run inference on prepared data
-    run_step("inference.py")
-
+    run_step("RandomForest.py")   # Train model → saves defect_prediction.pkl
+    run_step("prep.py")           # Prepare new_data.csv
+    run_step("inference.py")      # Run predictions
     print("✅ Evaluation pipeline completed successfully.")
+
