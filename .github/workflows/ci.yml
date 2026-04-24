@@ -44,10 +44,12 @@ jobs:
       - name: Run Pytest suite and generate report
         run: |
           pytest tests/ --maxfail=1 --disable-warnings -q --junitxml=pytest-report.xml
-      - name: Publish Test Results
-        uses: actions/upload-test-results@v1
+      - name: Publish Test Results to GitHub Actions
+        uses: dorny/test-reporter@v1
         with:
-          files: pytest-report.xml
+          name: Pytest Results
+          path: pytest-report.xml
+          reporter: junit
       - name: Upload Pytest Report Artifact
         uses: actions/upload-artifact@v4
         with:
