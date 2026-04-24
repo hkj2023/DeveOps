@@ -12,7 +12,9 @@ if not os.path.exists(DATA_PATH):
     raise FileNotFoundError(f"New data file not found at {DATA_PATH}. Run prep first.")
 
 # Load model and features
-model, feature_names = joblib.load(MODEL_PATH)
+saved = joblib.load(MODEL_PATH)
+model = saved["model"]
+feature_names = saved["features"]
 
 # Load new unseen data
 df = pd.read_csv(DATA_PATH)
