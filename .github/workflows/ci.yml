@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+permissions:
+  checks: write      # <-- allow test-reporter to publish results
+  contents: read     # <-- default needed for checkout
 
 jobs:
   data-prep:
