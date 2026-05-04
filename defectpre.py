@@ -3,7 +3,7 @@ import pandas as pd
 import json
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
 
 # 1. Load dataset
 df = pd.read_csv("Final.csv")  # replace with your actual file
@@ -37,18 +37,33 @@ model.fit(X_train, y_train)
 
 # 7. Predictions
 y_pred = model.predict(X_test)
-y_prob = model.predict_proba(X_test)[:, 1]  # probability of defect
+
+# Safe probability extraction
+if len(model.classes_) == 2:
+    y_prob = model.predict_proba(X_test)[:, 1]  # probability of defect
+else:
+    y_prob = model.predict_proba(X_test)[:, 0]  # only one class present
 
 # 8. Evaluation metrics
-results = {
-    "precision": precision_score(y_test, y_pred),
-    "recall": recall_score(y_test, y_pred),
-    "f1": f1_score(y_test, y_pred)
+results_split = {
+    "precision": precision_score(y_test, y_pred, zero_division=0),
+    "recall": recall_score(y_test, y_pred, zero_division=0),
+    "f1": f1_score(y_test, y_pred, zero_division=0)
 }
 
-# 9. Save metrics and predictions
+# 9. Cross-validation for more robust evaluation
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+cv_scores = cross_val_score(model, X, y, cv=cv, scoring="f1")
+
+results_cv = {
+    "cv_f1_scores": cv_scores.tolist(),
+    "cv_f1_mean": cv_scores.mean()
+}
+
+# 10. Save metrics and predictions
 output = {
-    "metrics": results,
+    "split_metrics": results_split,
+    "cross_validation": results_cv,
     "predictions": y_pred.tolist(),
     "probabilities": y_prob.tolist()
 }
